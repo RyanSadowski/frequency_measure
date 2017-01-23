@@ -1,5 +1,6 @@
  #include <LiquidCrystal.h>
-int input=13;
+int hallEffectsPin=13;
+int RPMpin=12;
 
 int high_time;
 int low_time;
@@ -11,7 +12,8 @@ float frequency;
 LiquidCrystal lcd(0, 1, 3, 4, 5, 6);
 void setup()
 {
-pinMode(input,INPUT);
+pinMode(hallEffectsPin,INPUT);
+pinMode(RPMpin,INPUT);
 lcd.begin(16, 2);
 circumfrence = 74.186; //find yours @ http://www.csgnetwork.com/tiresizescalc.html
 }
@@ -19,10 +21,17 @@ void loop()
 {
 lcd.clear();
 lcd.setCursor(0,0);
-lcd.print("Frequency Meter");
+ 
+rpm_high=pulseIn(RPMpin,HIGH);
+rpm_low=pulseIn(RPMpin,LOW);
+ 
+rpm_period=rpm_high+rpm_low;
+rpm_period=rpm_period/1000;
+tach=(1000/rpm_period) * 60;
+lcd.print(String(tach) + " RPM");
 
-high_time=pulseIn(input,HIGH);
-low_time=pulseIn(input,LOW);
+high_time=pulseIn(hallEffectsPin,HIGH);
+low_time=pulseIn(hallEffectsPin,LOW);
 
 
 time_period=high_time+low_time;
